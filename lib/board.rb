@@ -1,5 +1,7 @@
 require_relative "piece.rb"
+require_relative "display.rb"
 require "byebug"
+
  
 class Board 
 
@@ -14,9 +16,9 @@ class Board
         color = ""
         pops.each do |line|
             if line < 2 
-                color = :black 
+                color = :B 
             else
-                color = :white
+                color = :W
             end 
 
             @board[line].each_index do |p_idx|
@@ -41,7 +43,16 @@ class Board
         s_x, s_y = start_pos[0], start_pos[1]
         e_x, e_y = end_pos[0], end_pos[1]
 
-        raise "there's no piece at start" unless @board[s_x][s_y]
+        if valid_pos?([start_pos,end_pos])
+            @board[s_x][s_y],@board[e_x][e_y] = @board[e_x][e_y],@board[s_x][s_y]
+        end 
+    end 
+
+    def valid_pos?(pos)
+        start_pos, end_pos = pos
+        
+        s_x, s_y = start_pos[0], start_pos[1]
+        e_x, e_y = end_pos[0], end_pos[1]
 
         if (s_x > 7 || s_x < 0) && (s_y > 7 || s_y < 0)
             raise "the end position is invalid"
@@ -49,11 +60,9 @@ class Board
             raise "the end position is invalid"
         end 
 
-        @board[s_x][s_y],@board[e_x][e_y] = @board[e_x][e_y],@board[s_x][s_y]
-    end 
+        raise "there's no piece at start" unless @board[s_x][s_y]
 
-    def valid_pos?(pos)
-
+        return true
     end 
 
     def add_piece(piece, pos)
@@ -83,31 +92,38 @@ class Board
 
     end 
 
-    def display
-        @board.each do |line|
-            p line
-        end
-    end 
-
 end 
 
 if __FILE__ == $PROGRAM_NAME
     abb = Board.new
     abb.populate_board
-    abb.display
+
+    disp = Display.new(abb)
+    disp.render
+    #abb.display
     #regular movement
-    # abb.move_piece([1,1], [2, 1])
+    abb.move_piece([1,1], [2, 1])
 
     # invalid start
     # abb.move_piece([4,4], [2, 1])
 
     # invalid end move
-    # abb.move_piece([1,1], [888, -11])
+    #abb.move_piece([1,1], [888, -11])
 
     puts
     puts
     puts
 
-    abb.display
+    # abb.display
+    disp.render
+    while true
+        input = disp.cursor.get_input
+        # p input
+        puts
+        puts
+        puts
 
+        # abb.display
+        disp.render
+    end
 end
