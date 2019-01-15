@@ -41,6 +41,14 @@ class Board
         s_x, s_y = start_pos[0], start_pos[1]
         e_x, e_y = end_pos[0], end_pos[1]
 
+        raise "there's no piece at start" unless @board[s_x][s_y]
+
+        if (s_x > 7 || s_x < 0) && (s_y > 7 || s_y < 0)
+            raise "the end position is invalid"
+        elsif (e_x > 7 || e_x < 0) && (e_y > 7 || e_y < 0)
+            raise "the end position is invalid"
+        end 
+
         @board[s_x][s_y],@board[e_x][e_y] = @board[e_x][e_y],@board[s_x][s_y]
     end 
 
@@ -87,11 +95,18 @@ if __FILE__ == $PROGRAM_NAME
     abb = Board.new
     abb.populate_board
     abb.display
-    abb.move_piece([1,1], [2, 1])
+    #regular movement
+    # abb.move_piece([1,1], [2, 1])
+
+    # invalid start
+    # abb.move_piece([4,4], [2, 1])
+
+    # invalid end move
+    # abb.move_piece([1,1], [888, -11])
+
     puts
     puts
     puts
-    # abb.board[1][1], abb.board[2][1] = abb.board[2][1], abb.board[1][1]
 
     abb.display
 
