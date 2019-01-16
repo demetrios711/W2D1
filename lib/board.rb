@@ -1,5 +1,9 @@
 require_relative "piece.rb"
+require_relative "pawn.rb"
+require_relative "rook_bishop_queen.rb"
+require_relative "knight_king.rb"
 require_relative "display.rb"
+require_relative "null_piece.rb"
 require "byebug"
 
  
@@ -8,26 +12,79 @@ class Board
     attr_reader :board
 
     def initialize
-        @board = Array.new(8){Array.new(8)}
+        @board = Array.new(8){Array.new(8){NullPiece.instance}}
     end
 
     def populate_board
+
         pops = [0, 1, 6, 7] 
+        back_line = [:R, :H, :B, :K, :Q, :B, :H, :R]
         color = ""
         pops.each do |line|
-            if line < 2 
+            if line == 0
                 color = :B 
-            else
+                @board[line].each_index do |p_idx|
+                    case back_line[p_idx]
+                    when :R
+                        @board[line][p_idx] = RBC.new(color, self, [line, p_idx], "Black Rook")
+                    when :H 
+                        @board[line][p_idx] = KK.new(color, self, [line, p_idx], "Black Knight")
+                    when :B
+                        @board[line][p_idx] = RBC.new(color, self, [line, p_idx], "Black Bishop")
+                    when :K
+                        @board[line][p_idx] = KK.new(color, self, [line, p_idx], "Black King")
+                    when :Q
+                        @board[line][p_idx] = RBC.new(color, self, [line, p_idx], "Black Queen")
+                    end 
+                end 
+            elsif line == 1
+                color = :B 
+                @board[line].each_index do |p_idx|
+                    @board[line][p_idx] = Pawn.new(color, self, [line, p_idx], "Black Pawn")
+                end 
+            elsif line == 6
                 color = :W
-            end 
-
-            @board[line].each_index do |p_idx|
-                # testing
-                @board[line][p_idx] = color
-                # production 
-                # @board[line][p_idx] = Piece.new(color, self, [line, p_idx])
+                @board[line].each_index do |p_idx|
+                    @board[line][p_idx] = Pawn.new(color, self, [line, p_idx], "White Pawn")
+                end 
+            elsif line == 7
+                color = :W
+                @board[line].each_index do |p_idx|
+                    case back_line[p_idx]
+                    when :R
+                        @board[line][p_idx] = RBC.new(color, self, [line, p_idx], "White Rook")
+                    when :H 
+                        @board[line][p_idx] = KK.new(color, self, [line, p_idx], "White Knight")
+                    when :B
+                        @board[line][p_idx] = RBC.new(color, self, [line, p_idx], "White Bishop")
+                    when :K
+                        @board[line][p_idx] = KK.new(color, self, [line, p_idx], "White King")
+                    when :Q
+                        @board[line][p_idx] = RBC.new(color, self, [line, p_idx], "White Queen")
+                    end 
+                end 
             end 
         end
+        
+        
+        # Break glass in case of horribly horribly wrong.
+        # pops = [0, 1, 6, 7] 
+        # color = ""
+        # pops.each do |line|
+        #     if line < 2 
+        #         color = :B 
+        #     else
+        #         color = :W
+        #     end 
+
+        #     @board[line].each_index do |p_idx|
+        #         # testing
+        #         # @board[line][p_idx] = color
+
+        #         # production 
+        #         @board[line][p_idx] = Piece.new(color, self, [line, p_idx], "x")
+        #     end 
+        # end
     end 
 
     # def [](pos)
@@ -102,7 +159,7 @@ if __FILE__ == $PROGRAM_NAME
     disp.render
     #abb.display
     #regular movement
-    abb.move_piece([1,1], [2, 1])
+    #abb.move_piece([1,1], [2, 1])
 
     # invalid start
     # abb.move_piece([4,4], [2, 1])

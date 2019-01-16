@@ -1,12 +1,16 @@
 class Piece
-    def initialize(color, board, pos)
+    # attr_reader :color
+    def initialize(color, board, pos, value="X")
         @color = color
         @board = board
         @pos = pos 
+        @value = value
     end 
 
     def to_s
-
+        # print " " + @value + " "
+        # (self.color).to_s
+        "_#{@value.to_s}_"
     end 
 
     def empty?
@@ -30,4 +34,9 @@ class Piece
     def move_into_check?(end_pos)
 
     end
+
+    # def inspect
+    #     print " " + @color.to_s + " "
+    # end 
 end 
+
